@@ -17,27 +17,27 @@ For now the code is just an 'idea' of what I think can be done. And for now I ha
 
 ### Example
 
-  	var g = new Shape();
-	g.graphics.beginFill("#FCF").rect(0,0,180,100);
-	g.graphics.beginFill("#CFC").drawCircle(50,50,100);
-	g.graphics.beginFill("#F00").drawRoundRect(100,100,100,100,20);
-	g.graphics.beginFill("#0F0").drawEllipse(0,0,250,50);
-	g.graphics.setStrokeStyle(9).beginStroke("#FFF").moveTo(300,50).lineTo(500,200);
-	g.graphics.setStrokeStyle(9).beginStroke("#00F").moveTo(30,30).arcTo(120,120,70,70,5);
+var g = new Shape();
+g.graphics.beginFill("#FCF").rect(0,0,180,100);
+g.graphics.beginFill("#CFC").drawCircle(50,50,100);
+g.graphics.beginFill("#F00").drawRoundRect(100,100,100,100,20);
+g.graphics.beginFill("#0F0").drawEllipse(0,0,250,50);
+g.graphics.setStrokeStyle(9).beginStroke("#FFF").moveTo(300,50).lineTo(500,200);
+g.graphics.setStrokeStyle(9).beginStroke("#00F").moveTo(30,30).arcTo(120,120,70,70,5);
 
-	g.x = canvas.width/2 - g.width/2;
-	g.y = canvas.height/2 - g.height/2;
-        
-        console.log(g.width);
-        console.log(g.height);
+g.x = canvas.width/2 - g.width/2;
+g.y = canvas.height/2 - g.height/2;
 
-        g.width = 50; //etc etc.
-        
-        //also, for example:
-        var outline = new Shape();
-  	var bounds = g.getUnrotatedBounds();
-	outline.graphics.setStrokeStyle(3).beginStroke("rgb(62,255,45)").drawRect(bounds.x,bounds.y,bounds.width,bounds.height);
-        //Should draw a rect around the Shape();
+console.log(g.width);
+console.log(g.height);
+
+g.width = 50; //etc etc.
+
+//also, for example:
+var outline = new Shape();
+var bounds = g.getUnrotatedBounds();
+outline.graphics.setStrokeStyle(3).beginStroke("rgb(62,255,45)").drawRect(bounds.x,bounds.y,bounds.width,bounds.height);
+//Should draw a rect around the Shape();
 
 
 ## logger.rb
