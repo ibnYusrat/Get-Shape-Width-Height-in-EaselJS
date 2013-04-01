@@ -1,5 +1,5 @@
 # Objective
-Keep a record of all drawing commands and use them to generate height/width of a dynamically drawn Shape object.
+Keep an eye on the coordinates used in the drawing commands and use them to generate height/width of a dynamically drawn Shape object.
 
 ## Idea
 
