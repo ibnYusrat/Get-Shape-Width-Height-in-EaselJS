@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+		<title>width and height for Shape()</title>
+		<script type="text/javascript" src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
+		<script type="text/javascript">
+			var canvas, stage, outline,g;
+			
+			document.addEventListener("DOMContentLoaded",init);
+			function init() {
+				canvas = document.createElement("canvas");
+				canvas.width = 800;
+				canvas.height = 400;
+				document.body.appendChild(canvas);
+				stage = new createjs.Stage(canvas);				
+
+				g = new Shape();
+				g.graphics.beginFill("#FCF").rect(0,0,180,100);
+				g.graphics.beginFill("#CFC").drawCircle(50,50,100);
+				g.graphics.beginFill("#F00").drawRoundRect(100,100,100,100,20);
+				g.graphics.beginFill("#0F0").drawEllipse(0,0,250,50);
+				g.graphics.setStrokeStyle(9).beginStroke("#FFF").moveTo(300,50).lineTo(500,200);
+				g.graphics.setStrokeStyle(9).beginStroke("#00F").moveTo(30,30).arcTo(120,120,70,70,5);
+
+				g.x = canvas.width/2 - g.getUnrotatedWidth()/2;
+				g.y = canvas.height/2 - g.getUnrotatedHeight()/2;
+
+				outline = new Shape();
+				outline.x = g.x;
+				outline.y = g.y;
+				stage.addChild(g);
+				stage.addChild(outline);
+
+				createjs.Ticker.setFPS(30);
+
+        //I used this only to test getBounds() but that is not yet ready.
+				//createjs.Ticker.addEventListener("tick",onEnterFrame);
+				onEnterFrame();
+			}
+
+			function onEnterFrame () {
+				outline.graphics.clear();
+				var bounds = g.getUnrotatedBounds();
+				outline.graphics.setStrokeStyle(3).beginStroke("rgb(62,255,45)").drawRect(bounds.x,bounds.y,bounds.width,bounds.height);
+				stage.update();
+			}
+
+
+      //Create Shape class and inherit it from createjs.Shape()
+			var Shape;
+			Shape.prototype = new createjs.Shape();
+			function Shape (g) {
+				this.graphics = g ? g: new Graphics();
+				this.getUnrotatedBounds = function(){
+					var bounds = {width:this.width,height:this.height};
+					bounds.x = this.regX - ((this.regX - this.graphics.bounds.lowX)*this.scaleX);
+					bounds.y = this.regY - ((this.regY - this.graphics.bounds.lowY)*this.scaleY);
+     				return bounds;
+				}
+
+				this.getUnrotatedWidth = function(){
+					return (this.graphics.bounds.maxX - this.graphics.bounds.lowX)*this.scaleX;
+				}
+
+				this.getUnrotatedHeight = function(){
+					return (this.graphics.bounds.maxY - this.graphics.bounds.lowY)*this.scaleY;
+				}
+
+				this.__defineGetter__("width", function(){
+					var a = this.rotation*(Math.PI/180),w = this.getUnrotatedWidth(), h = this.getUnrotatedHeight();
+				    return w * Math.cos(a) + h * Math.sin(a);
+				});
+
+				this.__defineSetter__("width", function(input){
+					this.scaleX = 1;
+					this.scaleX = input/this.width;
+				});
+
+				this.__defineGetter__("height", function(){
+					var a = this.rotation*(Math.PI/180), w = this.getUnrotatedWidth(), h = this.getUnrotatedHeight();
+					return w * Math.sin(a) + h * Math.cos(a);
+				});
+				this.__defineSetter__("height", function(input){
+					this.scaleY = 1;
+					this.scaleY = input/this.height;
+				});
+
+  			this.getBounds  = function(){
+					/*
+					STILL NEEDS SOME WORK...
+
+					var theta = this.rotation*(Math.PI/180);
+					var xref =  this.graphics.bounds.lowX;
+					var yref = this.graphics.bounds.lowY;
+					var xro = this.regX;
+					var yro = this.regY;
+					var l = this.getUnrotatedWidth();
+					var h = this.getUnrotatedHeight();
+
+					 x0 = xro + Math.cos(theta)*(xref - xro) + Math.sin(theta)*(yref - yro);
+					 y0 = yro + Math.cos(theta)*(yref - yro) - Math.sin(theta)*(xref - xro);
+					 
+					 x1 = xro - Math.sin(theta)*(h - yref + yro) + Math.cos(theta)*(xref - xro);
+					 y1 = yro - Math.cos(theta)*(h - yref + yro) - Math.sin(theta)*(xref - xro);
+					 
+					 x2 = xro + Math.cos(theta)*(l + xref - xro) - Math.sin(theta)*(h - yref + yro);
+					 y2 = yro - Math.cos(theta)*(h - yref + yro) - Math.sin(theta)*(l + xref - xro);
+					 
+					 x3 = xro + Math.cos(theta)*(l + xref - xro) + Math.sin(theta)*(yref - yro);
+					 y3 = yro - Math.sin(theta)*(l + xref - xro) + Math.cos(theta)*(yref - yro);
+
+					 // %% Coordinates of the rotated rectangle
+					 //% Top Left coordinate of the rotated rectangle
+					 x0n = Math.min(x0,x1,x2,x3);
+					 y0n = Math.max(y0,y1,y2,y3);
+
+					 //% Bottom Left coordinate of the rectangle
+					 x1n = x0n;
+					 y1n = Math.min(y0,y1,y2,y3);
+					 //% Bottom Right coordinate of the rectangle
+					 x2n = Math.max(x0,x1,x2,x3);
+					 y2n = y1n;
+					 //% Top Right coordinate of the rectnagle
+					 x3n = x2n;
+					 y3n = y0n;
+					 */
+					 return "Comming soon!";
+				}
+			}
+
+			var Graphics;
+			Graphics.prototype = new createjs.Graphics();
+			function Graphics () {
+				this.bounds = {lowX:Infinity,lowY:Infinity,maxX:0,maxY:0};
+				this.strokeWidth = 0;
+				this.strokeActive = false;
+				this.currentPoint = {x:0,y:0}
+
+
+				//setStrokeStyle
+				this.setStrokeStyleCache = this.setStrokeStyle;
+				this.setStrokeStyle = this.ss = function(t, c, j,m,i) {
+					this.strokeWidth = t;
+					return this.setStrokeStyleCache(t, c, j, m, i); //Probably the worst implimentataion of Super(), ever?
+				}
+
+				//lineTo
+				this.lineToCache = this.lineTo;
+				this.lineTo = this.lt = function(x,y) {
+					this.updateBounds(this.currentPoint.x,this.currentPoint.y, x, y);
+					return this.lineToCache(x,y); //super()
+				}
+
+				//moveTo
+				this.moveToCache = this.moveTo;
+				this.moveTo = this.mt = function(x,y) {
+					this.currentPoint.x = x;
+					this.currentPoint.y = y;
+					return this.moveToCache(x,y); //super()
+				}
+
+				//beginStroke
+				this.beginStrokeCache = this.beginStroke;
+				this.beginStroke = this.s = function(c) {
+					this.strokeActive =true;
+					return this.beginStrokeCache(c);
+				}
+
+				//Begingradient stroke
+				this.beginLinearGradientStrokeCache = this.beginLinearGradientStroke;
+				this.beginLinearGradientStroke = this.ls = function(c,r,x0,y0,x1,y1) {
+					this.strokeActive =true;
+					return this.beginLinearGradientStrokeCache(c,r,x0,y0,x1,y1);
+				}
+
+				//beginBitmapStroke  stroke
+				this.beginBitmapStrokeCache = this.beginBitmapStroke;
+				this.beginBitmapStroke = this.bs = function(i, r)  {
+					this.strokeActive =true;
+					return this.beginBitmapStrokeCache(i,r);
+				}
+
+
+				//beginRadialGradientStroke  stroke
+				this.beginRadialGradientStrokeCache = this.beginRadialGradientStroke;
+				this.beginRadialGradientStroke = this.rs = function(colors, ratios, x0, y0, r0, x1, y1, r1)  {
+					this.strokeActive =true;
+					return this.beginRadialGradientStrokeCache(colors, ratios, x0, y0, r0, x1, y1, r1);
+				}
+
+				//beginStroke
+				this.endStrokeCache = this.endStroke;
+				this.endStroke = this.es = function() {
+					this.strokeActive = false;
+					return this.endStrokeCache();
+				}
+
+				//DrawRect
+				this.drawRectCache = this.rect;
+				this.drawRect = this.dr = this.r = this.rect = function(x,y,w,h) {
+					this.updateBounds(x,y,x+w,y+h);
+					return this.drawRectCache(x,y,w,h);
+				}
+
+
+				//DrawRoundRect
+				this.drawRoundRectCache = this.drawRoundRect;
+				this.drawRoundRect = this.rr = function(x,y,w,h,r) {
+					this.updateBounds(x,y,x+w,y+h);
+					return this.drawRoundRectCache(x,y,w,h,r);
+				}
+
+				//DrawRoundRectComplex
+				this.drawRoundRectComplexCache = this.drawRoundRectComplex;
+				this.drawRoundRectComplex = this.rc = function(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL) {
+					this.updateBounds(x,y,x+w,y+h);
+					return this.drawRoundRectComplexCache(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL);
+				}
+
+				//drawCircle
+				this.drawCircleCache = this.drawCircle;
+				this.drawCircle = this.dc = function(x, y, radius) {
+					this.updateBounds(x-radius,y-radius,x+radius,y+radius);
+					return this.drawCircleCache(x, y, radius);
+				}
+
+				//drawEclipse
+				this.drawEllipseCache = this.drawEllipse;
+				this.drawEllipse = this.de = function(x,y,w,h) {
+					this.updateBounds(x,y,w,h);
+					return this.drawEllipseCache(x,y,w,h);
+				}
+
+				this.updateBounds = function(x,y,mx,my){
+					var sw = this.strokeActive ? this.strokeWidth/2: 0;
+					this.bounds.lowX = Math.min(x-sw,this.bounds.lowX);
+					this.bounds.lowY = Math.min(y-sw,this.bounds.lowY);
+					this.bounds.maxX = Math.max(mx+sw,this.bounds.maxX);
+					this.bounds.maxY = Math.max(my+sw,this.bounds.maxY);
+				}
+			}
+
+      //Wrap for console.log.
+			function trace (s) {
+				console.log(s);
+			}
+		</script>
+	</head>
+	<body bgcolor="#000">		
+	</body>
+</html>
