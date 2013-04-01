@@ -3,7 +3,7 @@ Keep an eye on the coordinates used in the drawing commands and use them to gene
 
 ## Idea
 
-The idea is to create a new child class of createjs.Shape() class and before calling the drawing commands, we keep a record of the dimentions.
+The idea is to create a new child class of createjs.Shape() class and before calling the drawing commands, we keep a record of the coordinates.
 
 What (apparently) works:
 * Get width/height of a dynamically drawn Shape() object.
