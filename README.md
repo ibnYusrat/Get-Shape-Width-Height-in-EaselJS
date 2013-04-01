@@ -16,7 +16,6 @@ What (apparently) works:
 For now the code is just an 'idea' of what I think can be done. And for now I have only implimented it for Shape. This can very easily be extended to work for containers and other display objects.
 
 ### Example
-
 var g = new Shape();
 g.graphics.beginFill("#FCF").rect(0,0,180,100);
 g.graphics.beginFill("#CFC").drawCircle(50,50,100);
@@ -38,7 +37,6 @@ var outline = new Shape();
 var bounds = g.getUnrotatedBounds();
 outline.graphics.setStrokeStyle(3).beginStroke("rgb(62,255,45)").drawRect(bounds.x,bounds.y,bounds.width,bounds.height);
 //Should draw a rect around the Shape();
-
 
 ## logger.rb
 An example using logger as a watcher. Pretty straighforward.
