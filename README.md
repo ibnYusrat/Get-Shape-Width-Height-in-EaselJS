@@ -13,7 +13,7 @@ What (apparently) works:
 * A formula for getting bounds even when it is rotated is also included, but is commented because its not accurate. Check out the source-code.
 
 ## Reason for making this git
-For now the code is just an 'idea' of what I think can be done. And for now I have only implimented it for Shape. This can very easily be extended to work for containers and other display objects.
+For now the code is a working idea of what I think can be done. And for now I have only implimented it for Shape. This can very easily be extended to work for containers and other display objects.
 
 ### Example
 	var g = new Shape();
